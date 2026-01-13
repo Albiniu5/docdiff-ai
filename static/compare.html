@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Documents - DocDiff AI</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="logo">
+                    <span class="logo-icon">📄</span>
+                    <span>DocDiff AI</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Compare Two Documents</h1>
+                <p class="hero-subtitle">Upload your files to see an AI-powered comparison</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section>
+        <div class="container">
+            <div class="upload-card">
+                <div class="upload-grid">
+                    <div class="upload-zone" id="uploadZoneA">
+                        <input type="file" id="fileInputA" accept=".pdf,.docx,.txt" hidden>
+                        <div class="upload-icon">📄</div>
+                        <h3>Document A</h3>
+                        <p class="upload-instruction">Click or drag to upload</p>
+                        <p class="upload-formats">PDF, DOCX, TXT • Max 10MB</p>
+                        <div class="file-info" id="fileInfoA" style="display: none;">
+                            <div class="file-name"></div>
+                            <div class="file-size"></div>
+                            <button class="remove-file" onclick="removeFile('A')">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="upload-zone" id="uploadZoneB">
+                        <input type="file" id="fileInputB" accept=".pdf,.docx,.txt" hidden>
+                        <div class="upload-icon">📄</div>
+                        <h3>Document B</h3>
+                        <p class="upload-instruction">Click or drag to upload</p>
+                        <p class="upload-formats">PDF, DOCX, TXT • Max 10MB</p>
+                        <div class="file-info" id="fileInfoB" style="display: none;">
+                            <div class="file-name"></div>
+                            <div class="file-size"></div>
+                            <button class="remove-file" onclick="removeFile('B')">✕</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="compare-action">
+                    <button id="compareBtn" class="btn btn-primary btn-large" disabled>
+                        Compare Documents
+                    </button>
+                    <p class="privacy-note">🔒 Your documents are processed securely and never stored</p>
+                </div>
+
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                <div id="loadingState" class="loading-state" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing documents with AI...</p>
+                    <p class="loading-subtext">This may take a few seconds</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="results-section" style="display: none;">
+        <div class="container">
+            <div class="results-header">
+                <h2>Comparison Results</h2>
+                <button id="newCompareBtn" class="btn btn-secondary">New Comparison</button>
+            </div>
+
+            <div class="results-summary" id="resultsSummary"></div>
+
+            <div class="stats-grid" id="statsGrid"></div>
+
+            <div class="changes-container">
+                <div class="changes-section">
+                    <h3 class="changes-title">
+                        <span class="change-icon added">+</span>
+                        Additions
+                        <span class="count" id="additionsCount">0</span>
+                    </h3>
+                    <div class="changes-list" id="additionsList"></div>
+                </div>
+
+                <div class="changes-section">
+                    <h3 class="changes-title">
+                        <span class="change-icon removed">-</span>
+                        Deletions
+                        <span class="count" id="deletionsCount">0</span>
+                    </h3>
+                    <div class="changes-list" id="deletionsList"></div>
+                </div>
+
+                <div class="changes-section">
+                    <h3 class="changes-title">
+                        <span class="change-icon modified">~</span>
+                        Modifications
+                        <span class="count" id="modificationsCount">0</span>
+                    </h3>
+                    <div class="changes-list" id="modificationsList"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 DocDiff AI. Built with AI, designed for privacy.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/compare.js"></script>
+</body>
+
+</html>

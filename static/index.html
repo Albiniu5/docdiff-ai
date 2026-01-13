@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>DocDiff AI - Free Online Document Comparison Tool (PDF, DOCX, Text)</title>
+    <meta name="description"
+        content="Compare documents efficiently with AI. Upload PDF or Word files, or paste text to instantly spot differences. Fast, private, and free document comparison tool.">
+    <meta name="keywords"
+        content="compare documents, ai document comparison, pdf compare, word compare, text difference checker, diff tool, document analysis">
+    <meta name="author" content="DocDiff AI">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://docdiff.ai/">
+    <meta property="og:title" content="DocDiff AI - Intelligent Document Comparison">
+    <meta property="og:description"
+        content="Instantly compare agreements, contracts, and code with AI-powered precision. Spot changes in seconds.">
+    <meta property="og:image" content="https://docdiff.ai/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://docdiff.ai/">
+    <meta property="twitter:title" content="DocDiff AI - Intelligent Document Comparison">
+    <meta property="twitter:description"
+        content="Instantly compare agreements, contracts, and code with AI-powered precision. Spot changes in seconds.">
+    <meta property="twitter:image" content="https://docdiff.ai/og-image.jpg">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "DocDiff AI",
+      "url": "https://docdiff.ai/",
+      "description": "Free AI-powered tool to compare documents and text for differences.",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": "PDF Comparison, DOCX Comparison, Text Diff, AI Analysis"
+    }
+    </script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="logo">
+                    <span class="logo-icon">📄</span>
+                    <span>DocDiff AI</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/#features">Features</a></li>
+                    <li><a href="/compare" class="btn btn-primary">Compare Documents</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Compare Documents with AI</h1>
+                <p class="hero-subtitle">Upload files or paste text to get an intelligent comparison powered by AI.
+                    Fast,
+                    accurate, and completely private.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Upload Card -->
+    <section>
+        <div class="container">
+            <div class="upload-card">
+                <h2 style="text-align: center; margin-bottom: 1rem; font-size: 1.75rem;">Quick Compare</h2>
+
+                <!-- Input Mode Toggle -->
+                <div class="input-mode-toggle">
+                    <label class="toggle-label">
+                        <span class="mode-text" id="modeTextUpload">Upload Files</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="inputModeToggle">
+                            <span class="slider"></span>
+                        </div>
+                        <span class="mode-text" id="modeTextPaste">Paste Text</span>
+                    </label>
+                </div>
+
+                <!-- File Upload Mode -->
+                <div id="uploadMode" class="input-mode-container">
+                    <div class="upload-grid">
+                        <div class="upload-zone" id="uploadZoneA">
+                            <input type="file" id="fileInputA" accept=".pdf,.docx,.txt" hidden>
+                            <div class="upload-icon">📄</div>
+                            <h3>Document A</h3>
+                            <p class="upload-instruction">Click or drag to upload</p>
+                            <p class="upload-formats">PDF, DOCX, TXT • Max 10MB</p>
+                            <div class="file-info" id="fileInfoA" style="display: none;">
+                                <div class="file-name"></div>
+                                <div class="file-size"></div>
+                                <button class="remove-file" onclick="removeFile('A')">✕</button>
+                            </div>
+                        </div>
+
+                        <div class="upload-zone" id="uploadZoneB">
+                            <input type="file" id="fileInputB" accept=".pdf,.docx,.txt" hidden>
+                            <div class="upload-icon">📄</div>
+                            <h3>Document B</h3>
+                            <p class="upload-instruction">Click or drag to upload</p>
+                            <p class="upload-formats">PDF, DOCX, TXT • Max 10MB</p>
+                            <div class="file-info" id="fileInfoB" style="display: none;">
+                                <div class="file-name"></div>
+                                <div class="file-size"></div>
+                                <button class="remove-file" onclick="removeFile('B')">✕</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Input Mode -->
+                <div id="textMode" class="input-mode-container" style="display: none;">
+                    <div class="text-grid">
+                        <div class="text-input-zone">
+                            <h3>Text A</h3>
+                            <textarea id="textInputA" placeholder="Paste or type your first text here..."></textarea>
+                            <div class="char-count"><span id="charCountA">0</span> characters</div>
+                        </div>
+
+                        <div class="text-input-zone">
+                            <h3>Text B</h3>
+                            <textarea id="textInputB" placeholder="Paste or type your second text here..."></textarea>
+                            <div class="char-count"><span id="charCountB">0</span> characters</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="compare-action">
+                    <button id="compareBtn" class="btn btn-primary btn-large" disabled>
+                        Compare Documents
+                    </button>
+                    <p class="privacy-note">🔒 Your documents are processed securely and never stored</p>
+                </div>
+
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                <div id="loadingState" class="loading-state" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing documents with AI...</p>
+                    <p class="loading-subtext">This may take a few seconds</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section (initially hidden) -->
+    <section id="resultsSection" class="results-section" style="display: none;">
+        <div class="container">
+            <div class="results-header">
+                <h2>Comparison Results</h2>
+                <button id="newCompareBtn" class="btn btn-secondary">New Comparison</button>
+            </div>
+
+            <div class="results-summary" id="resultsSummary"></div>
+
+            <div class="stats-grid" id="statsGrid"></div>
+
+            <div class="changes-container">
+                <div class="changes-section">
+                    <h3 class="changes-title">
+                        <span class="change-icon added">+</span>
+                        Additions
+                        <span class="count" id="additionsCount">0</span>
+                    </h3>
+                    <div class="changes-list" id="additionsList"></div>
+                </div>
+
+                <div class="changes-section">
+                    <h3 class="changes-title">
+                        <span class="change-icon removed">-</span>
+                        Deletions
+                        <span class="count" id="deletionsCount">0</span>
+                    </h3>
+                    <div class="changes-list" id="deletionsList"></div>
+                </div>
+
+                <div class="changes-section">
+                    <h3 class="changes-title">
+                        <span class="change-icon modified">~</span>
+                        Modifications
+                        <span class="count" id="modificationsCount">0</span>
+                    </h3>
+                    <div class="changes-list" id="modificationsList"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ad Placeholder (Future Google Ads) -->
+    <div class="ad-container"
+        style="max-width: 1000px; margin: 2rem auto; text-align: center; min-height: 90px; background: transparent;">
+        <!-- <div class="ad-slot">Advertising Space</div> -->
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="features-title">Why DocDiff AI?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Our AI understands context and meaning, not just text differences.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Get comprehensive comparison results in seconds.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Private</h3>
+                    <p>Documents are processed in-memory and never stored.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Works Everywhere</h3>
+                    <p>Use on any device - desktop, tablet, or mobile.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 DocDiff AI. Built with AI, designed for privacy.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/compare.js"></script>
+</body>
+
+</html>
