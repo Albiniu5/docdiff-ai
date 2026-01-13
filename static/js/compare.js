@@ -397,6 +397,26 @@ function displayResults(data) {
     setTimeout(() => {
         resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
+
+    // Setup Gemini Button
+    const geminiBtn = document.getElementById('openGeminiBtn');
+    if (geminiBtn) {
+        // Clone to remove old listeners
+        const newBtn = geminiBtn.cloneNode(true);
+        geminiBtn.parentNode.replaceChild(newBtn, geminiBtn);
+
+        newBtn.addEventListener('click', () => {
+            const prompt = `Please perform a deep analysis of these two documents. Identify subtle differences, potential risks, and implications.\n\nDocument A:\n---\n${data.textA || ''}\n---\n\nDocument B:\n---\n${data.textB || ''}\n---\n\nProvide a detailed report.`;
+
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert("Copied to clipboard! \n\n1. Gemini will open in a new tab.\n2. Simply PASTE (Ctrl+V) to start the analysis.");
+                window.open('https://gemini.google.com/app', '_blank');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert("Failed to copy to clipboard. Please allow clipboard access.");
+            });
+        });
+    }
 }
 
 function displayChangesList(changes, listId, countId, className, emptyMessage) {

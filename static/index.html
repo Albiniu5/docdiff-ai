@@ -177,7 +177,14 @@
         <div class="container">
             <div class="results-header">
                 <h2>Comparison Results</h2>
-                <button id="newCompareBtn" class="btn btn-secondary">New Comparison</button>
+                <div class="action-buttons" style="display: flex; gap: 1rem;">
+                    <button id="openGeminiBtn" class="btn btn-secondary"
+                        style="border-color: #4285F4; color: #4285F4; align-items: center; display: flex; gap: 0.5rem;">
+                        <span class="material-icons-round">open_in_new</span>
+                        Deep Analysis (Gemini)
+                    </button>
+                    <button id="newCompareBtn" class="btn btn-secondary">New Comparison</button>
+                </div>
             </div>
 
             <div class="results-summary" id="resultsSummary"></div>

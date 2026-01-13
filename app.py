@@ -298,6 +298,8 @@ def compare_documents():
             return jsonify({
                 'success': True,
                 'comparison': comparison_result,
+                'textA': text_a,
+                'textB': text_b,
                 'metadata': {
                     'documentA': filename_a,
                     'documentB': filename_b,
@@ -336,6 +338,8 @@ def compare_text():
         return jsonify({
             'success': True,
             'comparison': comparison_result,
+            'textA': text_a,
+            'textB': text_b,
             'metadata': {
                 'lengthA': len(text_a),
                 'lengthB': len(text_b)
