@@ -1,12 +1,12 @@
 # 🚀 Deployment Guide: Hetzner VPS + Coolify
 
-This guide will walk you through setting up your own "mini-cloud" on Hetzner using Coolify. This is the most cost-effective way to host **DocDiff AI** and any future apps you build.
+This guide will walk you through setting up your own "mini-cloud" on Hetzner using Coolify. This is the most cost-effective way to host **Compare Docs AI** and any future apps you build.
 
 ---
 
 ## Phase 1: Get the Server (Hetzner)
 
-1.  **Log in/Sign up** at [Hetzner Cloud Console](https://console.hetzner.cloud/).
+1.  **Log in/Sign up** at [Hetzner Cloud Console](  
 2.  Create a **New Project** (e.g., "MyApps").
 3.  Click **"Add Server"**.
 4.  **Location**: Choose one close to your users (e.g., Falkenstein or Ashburn, VA).
@@ -37,7 +37,7 @@ This guide will walk you through setting up your own "mini-cloud" on Hetzner usi
 
 ---
 
-## Phase 3: Deploy DocDiff AI
+## Phase 3: Deploy Compare Docs AI
 
 1.  Open your browser and go to `http://<YOUR_SERVER_IP>:8000`.
 2.  **Sign up** (this creates the admin account for your private Coolify instance).

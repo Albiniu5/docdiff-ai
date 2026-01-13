@@ -1,7 +1,9 @@
 /* ===================================
-   SIMPLIFIED DOCDIFF AI - LIGHT THEME
+   SIMPLIFIED COMPARE DOCS AI - LIGHT THEME
    Clean, minimalist design inspired by iLovePDF, Smallpdf, Adobe
    =================================== */
+
+@import url('legal.css');
 
 * {
     margin: 0;
