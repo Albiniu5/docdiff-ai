@@ -407,8 +407,11 @@ function displayResults(data) {
 
         newBtn.addEventListener('click', () => {
             // Include the initial comparison result in the prompt
-            const initialAnalysis = JSON.stringify(comparisonData, null, 2);
-            const prompt = `I have performed an initial comparison of these two documents using DocDiff. Here is the summary of changes found so far:\n\n${initialAnalysis}\n\nBased on this, please perform a DEEPER analysis. Identify subtle differences, potential legal/technical risks, and semantic implications that a simple diff might miss.\n\nDocument A (Original):\n---\n${data.textA || ''}\n---\n\nDocument B (Modified):\n---\n${data.textB || ''}\n---\n\nProvide a comprehensive expert report.`;
+            // Format the initial comparison result as readable text (not JSON)
+            const stats = comparisonData.statistics || {};
+            let readableSummary = `Initial Findings Summary:\n${comparisonData.summary || 'No summary available.'}\n\nKey Metrics:\n- Total Changes: ${stats.total_changes || 0}\n- Additions: ${stats.additions_count || 0}\n- Deletions: ${stats.deletions_count || 0}\n- Modifications: ${stats.modifications_count || 0}`;
+
+            const prompt = `I have performed an initial comparison of attached documents. Here is the summary of changes found:\n\n${readableSummary}\n\nBased on these findings and the documents below, please perform a DEEPER analysis. Identify subtle differences, potential risks, and semantic implications.\n\nDocument A (Original):\n---\n${data.textA || ''}\n---\n\nDocument B (Modified):\n---\n${data.textB || ''}\n---\n\nProvide a comprehensive expert report.`;
 
             navigator.clipboard.writeText(prompt).then(() => {
                 alert("Copied to clipboard! \n\n1. Gemini will open in a new tab.\n2. Simply PASTE (Ctrl+V) to start the analysis.");
