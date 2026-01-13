@@ -529,6 +529,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newCompareBtn) {
         newCompareBtn.addEventListener('click', resetComparison);
     }
+
+    // Clear Inputs Button
+    const clearBtn = document.getElementById('clearInputsBtn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            resetComparison();
+        });
+    }
 });
 
 // Make removeFile available globally
