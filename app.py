@@ -84,10 +84,10 @@ def compare_documents_with_ai(text_a, text_b):
     # List of models to try in order of preference
     models_to_try = [
         'gemini-2.5-pro',
-        'gemini-3-flash-preview',
         'gemini-2.5-flash',
-        'gemini-1.5-pro',
-        'gemini-1.5-flash'
+        'gemini-2.0-flash',
+        'gemini-2.0-flash-lite-preview',
+        'gemini-flash-latest'
     ]
     
     last_error = None
