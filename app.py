@@ -249,6 +249,14 @@ def index():
     """Serve landing page"""
     return send_from_directory('static', 'index.html')
 
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('static', 'sitemap.xml')
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory('static', 'robots.txt')
+
 @app.route('/compare')
 def compare_page():
     """Serve comparison page"""
