@@ -23,6 +23,20 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
+# Configure Groq
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+groq_client = None
+if GROQ_API_KEY:
+    from groq import Groq
+    groq_client = Groq(api_key=GROQ_API_KEY)
+
+# Configure Mistral
+MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
+mistral_client = None
+if MISTRAL_API_KEY:
+    from mistralai import Mistral
+    mistral_client = Mistral(api_key=MISTRAL_API_KEY)
+
 def allowed_file(filename):
     """Check if file extension is allowed"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -77,27 +91,13 @@ def extract_text(file_path, filename):
         raise Exception("Unsupported file type")
 
 def compare_documents_with_ai(text_a, text_b):
-    """Use Gemini AI to compare two documents with fallbacks"""
-    if not GEMINI_API_KEY:
-        raise Exception("Gemini API key not configured. Please set GEMINI_API_KEY in your .env file")
-    
-    # List of models to try in order of preference
-    models_to_try = [
-        'gemini-2.5-pro',
-        'gemini-2.5-flash',
-        'gemini-2.0-flash',
-        'gemini-2.0-flash-lite-preview',
-        'gemini-flash-latest'
-    ]
+    """Use Gemini AI to compare two documents with fallbacks (Gemini -> Groq -> Mistral)"""
+    if not GEMINI_API_KEY and not GROQ_API_KEY and not MISTRAL_API_KEY:
+        raise Exception("No API keys configured. Please set GEMINI, GROQ, or MISTRAL keys in .env")
     
     last_error = None
     
-    for model_name in models_to_try:
-        try:
-            print(f"Trying model: {model_name}...")
-            model = genai.GenerativeModel(model_name)
-            
-            prompt = f"""You are a document comparison expert. Compare the following two documents and identify all differences.
+    prompt = f"""You are a document comparison expert. Compare the following two documents and identify all differences.
 
 Document A:
 ---
@@ -131,16 +131,81 @@ Format your response as JSON with this structure:
 
 Be precise and highlight meaningful differences. Ignore minor formatting differences unless they affect meaning."""
 
-            response = model.generate_content(prompt)
-            return response.text
+    # 1. Try Gemini Models
+    if GEMINI_API_KEY:
+        models_to_try = [
+            'gemini-2.5-pro',
+            'gemini-2.5-flash',
+            'gemini-2.0-flash',
+            'gemini-2.0-flash-lite-preview',
+            'gemini-flash-latest'
+        ]
+        
+        for model_name in models_to_try:
+            try:
+                print(f"Trying Gemini model: {model_name}...")
+                model = genai.GenerativeModel(model_name)
+                response = model.generate_content(prompt)
+                return response.text
+                
+            except Exception as e:
+                print(f"Gemini model {model_name} failed: {str(e)}")
+                last_error = e
+                continue
+
+    # 2. Try Groq (Llama 3.1) if Gemini fails or isn't configured
+    if groq_client:
+        try:
+            print("Falling back to Groq (llama-3.3-70b-versatile)...")
+            
+            completion = groq_client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a JSON-only document comparison expert. You must output VALID JSON. Do not include markdown code blocks (```json). Just the raw JSON object."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt 
+                    }
+                ],
+                model="llama-3.3-70b-versatile",
+                temperature=0.1,
+                response_format={"type": "json_object"}
+            )
+            return completion.choices[0].message.content
             
         except Exception as e:
-            print(f"Model {model_name} failed: {str(e)}")
+            print(f"Groq failed: {str(e)}")
             last_error = e
-            continue
             
+    # 3. Try Mistral if Groq fails or isn't configured
+    if mistral_client:
+        try:
+            print("Falling back to Mistral (mistral-small-latest)...")
+            
+            chat_response = mistral_client.chat.complete(
+                model="mistral-small-latest",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a JSON-only document comparison expert. You must output VALID JSON. Do not include markdown code blocks. Just the raw JSON object."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                response_format={"type": "json_object"}
+            )
+            return chat_response.choices[0].message.content
+
+        except Exception as e:
+            print(f"Mistral failed: {str(e)}")
+            last_error = e
+
     # If all models fail
-    raise Exception(f"All AI models failed. Last error: {str(last_error)}")
+    raise Exception(f"All AI providers failed. Last error: {str(last_error)}")
 
 @app.route('/')
 def index():
