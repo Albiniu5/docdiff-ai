@@ -111,6 +111,8 @@ body {
     display: flex;
     list-style: none;
     gap: var(--spacing-lg);
+    align-items: center;
+    /* Fix vertical alignment */
 }
 
 .nav-links a {
@@ -123,6 +125,11 @@ body {
 .nav-links a:hover,
 .nav-links a.active {
     color: var(--accent-primary);
+}
+
+/* Ensure button text is white in navbar */
+.nav-links .btn-primary {
+    color: white !important;
 }
 
 /* ===================================
