@@ -249,6 +249,18 @@ def index():
     """Serve landing page"""
     return send_from_directory('static', 'index.html')
 
+@app.route('/privacy')
+def privacy():
+    return send_from_directory('static', 'privacy.html')
+
+@app.route('/terms')
+def terms():
+    return send_from_directory('static', 'terms.html')
+
+@app.route('/contact')
+def contact():
+    return send_from_directory('static', 'contact.html')
+
 @app.route('/sitemap.xml')
 def sitemap():
     return send_from_directory('static', 'sitemap.xml')
