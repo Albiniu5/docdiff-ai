@@ -406,7 +406,9 @@ function displayResults(data) {
         geminiBtn.parentNode.replaceChild(newBtn, geminiBtn);
 
         newBtn.addEventListener('click', () => {
-            const prompt = `Please perform a deep analysis of these two documents. Identify subtle differences, potential risks, and implications.\n\nDocument A:\n---\n${data.textA || ''}\n---\n\nDocument B:\n---\n${data.textB || ''}\n---\n\nProvide a detailed report.`;
+            // Include the initial comparison result in the prompt
+            const initialAnalysis = JSON.stringify(comparisonData, null, 2);
+            const prompt = `I have performed an initial comparison of these two documents using DocDiff. Here is the summary of changes found so far:\n\n${initialAnalysis}\n\nBased on this, please perform a DEEPER analysis. Identify subtle differences, potential legal/technical risks, and semantic implications that a simple diff might miss.\n\nDocument A (Original):\n---\n${data.textA || ''}\n---\n\nDocument B (Modified):\n---\n${data.textB || ''}\n---\n\nProvide a comprehensive expert report.`;
 
             navigator.clipboard.writeText(prompt).then(() => {
                 alert("Copied to clipboard! \n\n1. Gemini will open in a new tab.\n2. Simply PASTE (Ctrl+V) to start the analysis.");
