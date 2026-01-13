@@ -37,6 +37,16 @@ if MISTRAL_API_KEY:
     from mistralai import Mistral
     mistral_client = Mistral(api_key=MISTRAL_API_KEY)
 
+# Configure DeepSeek
+DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
+deepseek_client = None
+if DEEPSEEK_API_KEY:
+    from openai import OpenAI
+    deepseek_client = OpenAI(
+        api_key=DEEPSEEK_API_KEY,
+        base_url="https://api.deepseek.com"
+    )
+
 def allowed_file(filename):
     """Check if file extension is allowed"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -91,9 +101,9 @@ def extract_text(file_path, filename):
         raise Exception("Unsupported file type")
 
 def compare_documents_with_ai(text_a, text_b):
-    """Use Gemini AI to compare two documents with fallbacks (Gemini -> Groq -> Mistral)"""
-    if not GEMINI_API_KEY and not GROQ_API_KEY and not MISTRAL_API_KEY:
-        raise Exception("No API keys configured. Please set GEMINI, GROQ, or MISTRAL keys in .env")
+    """Use Gemini AI to compare two documents with fallbacks (Gemini -> Groq -> Mistral -> DeepSeek)"""
+    if not GEMINI_API_KEY and not GROQ_API_KEY and not MISTRAL_API_KEY and not DEEPSEEK_API_KEY:
+        raise Exception("No API keys configured. Please set GEMINI, GROQ, MISTRAL, or DEEPSEEK keys in .env")
     
     last_error = None
     
@@ -202,6 +212,33 @@ Be precise and highlight meaningful differences. Ignore minor formatting differe
 
         except Exception as e:
             print(f"Mistral failed: {str(e)}")
+            last_error = e
+
+    # 4. Try DeepSeek if Mistral fails or isn't configured
+    if deepseek_client:
+        try:
+            print("Falling back to DeepSeek (deepseek-chat)...")
+            
+            completion = deepseek_client.chat.completions.create(
+                model="deepseek-chat",
+                messages=[
+                    {
+                        "role": "system", 
+                        "content": "You are a JSON-only document comparison expert. You must output VALID JSON. Do not include markdown code blocks. Just the raw JSON object."
+                    },
+                    {
+                        "role": "user", 
+                        "content": prompt
+                    }
+                ],
+                response_format={
+                    'type': 'json_object'
+                }
+            )
+            return completion.choices[0].message.content
+            
+        except Exception as e:
+            print(f"DeepSeek failed: {str(e)}")
             last_error = e
 
     # If all models fail
