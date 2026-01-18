@@ -1,0 +1,53 @@
+/* Feedback Summary Widget */
+.feedback-summary {
+    background: linear-gradient(to right, #fffbeb, #fefce8);
+    border: 1px solid #fde68a;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+    /* Centered as per typical landing page */
+}
+
+.feedback-summary-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.feedback-stars-display {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.star-icon {
+    width: 20px;
+    height: 20px;
+    color: #cbd5e1;
+    /* Gray-300 */
+    fill: currentColor;
+}
+
+.star-icon.filled {
+    color: #fbbf24;
+    /* Amber-400 */
+}
+
+.feedback-average {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.feedback-count {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.feedback-count strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}

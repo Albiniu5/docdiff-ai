@@ -297,7 +297,7 @@ async function compareDocuments() {
 
         // Display results
         displayResults(data);
-        
+
         // Gamification: Award points and track conversions
         if (typeof awardPoints === 'function') {
             awardPoints(10, 'Comparison completed');
@@ -317,7 +317,7 @@ async function compareDocuments() {
                 socialProofContainer.innerHTML = createSocialProof();
             }
         }
-        
+
         // Show feedback survey after successful comparison
         setTimeout(() => {
             if (typeof showPostConversionFeedback === 'function') {
@@ -448,6 +448,47 @@ function displayResults(data) {
                 console.error('Failed to copy text: ', err);
                 alert("Failed to copy to clipboard. Please allow clipboard access.");
             });
+        });
+    }
+
+    // Setup Download Report Button
+    const downloadBtn = document.getElementById('downloadReportBtn');
+    if (downloadBtn) {
+        // Clone to clean
+        const newDownloadBtn = downloadBtn.cloneNode(true);
+        downloadBtn.parentNode.replaceChild(newDownloadBtn, downloadBtn);
+
+        newDownloadBtn.addEventListener('click', () => {
+            // 1. Generate Report Content
+            const stats = comparisonData.statistics || {};
+            let reportContent = `COMPARE DOCS AI - REPORT\n=========================\n\n`;
+            reportContent += `SUMMARY\n-------\n${comparisonData.summary || 'N/A'}\n\n`;
+            reportContent += `STATISTICS\n----------\nTotal Changes: ${stats.total_changes || 0}\nAdditions: ${stats.additions_count || 0}\nDeletions: ${stats.deletions_count || 0}\nModifications: ${stats.modifications_count || 0}\n\n`;
+
+            if (comparisonData.additions && comparisonData.additions.length) {
+                reportContent += `ADDITIONS\n---------\n${comparisonData.additions.join('\n- ')}\n\n`;
+            }
+            if (comparisonData.deletions && comparisonData.deletions.length) {
+                reportContent += `DELETIONS\n---------\n${comparisonData.deletions.join('\n- ')}\n\n`;
+            }
+
+            // 2. Trigger Download
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'comparison_report.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            // 3. Prompt Contact Modal after small delay
+            setTimeout(() => {
+                if (typeof showContactModal === 'function') {
+                    showContactModal();
+                }
+            }, 1500);
         });
     }
 }

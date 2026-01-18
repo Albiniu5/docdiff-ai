@@ -71,9 +71,9 @@ const TIPS = [
 function showInAppTip(container) {
     const dismissedTips = getDismissedTips();
     const availableTips = TIPS.filter(tip => !dismissedTips.includes(tip.id));
-    
+
     if (availableTips.length === 0) return null;
-    
+
     const randomTip = availableTips[Math.floor(Math.random() * availableTips.length)];
     const tipHtml = `
         <div class="in-app-tip animate-in slide-in-from-top-2" id="inAppTip">
@@ -86,7 +86,7 @@ function showInAppTip(container) {
             </div>
         </div>
     `;
-    
+
     if (container) {
         container.innerHTML = tipHtml;
         // Auto-dismiss after 8 seconds
@@ -94,7 +94,7 @@ function showInAppTip(container) {
             dismissTip(randomTip.id);
         }, 8000);
     }
-    
+
     return randomTip.id;
 }
 
@@ -138,11 +138,11 @@ function showPostConversionFeedback() {
     const lastFeedbackTime = localStorage.getItem('comparedocsai_lastFeedbackTime');
     const now = Date.now();
     const oneDay = 24 * 60 * 60 * 1000;
-    
+
     if (lastFeedbackTime && (now - parseInt(lastFeedbackTime)) < oneDay) {
         return;
     }
-    
+
     const overlay = document.createElement('div');
     overlay.className = 'feedback-overlay';
     overlay.id = 'feedbackOverlay';
@@ -174,7 +174,7 @@ function submitFeedback(rating) {
     } catch (e) {
         console.error('Failed to save feedback:', e);
     }
-    
+
     // Show thank you message
     const overlay = document.getElementById('feedbackOverlay');
     if (overlay) {
@@ -189,6 +189,9 @@ function submitFeedback(rating) {
             closeFeedback();
         }, 2000);
     }
+
+    // Update summary
+    createFeedbackSummary();
 }
 
 function closeFeedback() {
@@ -204,18 +207,18 @@ function closeFeedback() {
 // Floating Action Button Component
 function createFAB() {
     if (window.innerWidth >= 769) return; // Hide on desktop
-    
+
     const fab = document.createElement('button');
     fab.className = 'fab';
     fab.innerHTML = '+';
     fab.id = 'mainFAB';
     fab.setAttribute('aria-label', 'Quick upload');
-    
+
     const menu = document.createElement('div');
     menu.className = 'fab-menu';
     menu.id = 'fabMenu';
     menu.style.display = 'none';
-    
+
     const browseItem = document.createElement('button');
     browseItem.className = 'fab-menu-item';
     browseItem.innerHTML = '📄';
@@ -225,7 +228,7 @@ function createFAB() {
         if (fileInput) fileInput.click();
         toggleFABMenu();
     };
-    
+
     const cameraItem = document.createElement('button');
     cameraItem.className = 'fab-menu-item';
     cameraItem.innerHTML = '📷';
@@ -247,12 +250,12 @@ function createFAB() {
         }
         toggleFABMenu();
     };
-    
+
     menu.appendChild(browseItem);
     menu.appendChild(cameraItem);
-    
+
     fab.onclick = toggleFABMenu;
-    
+
     document.body.appendChild(menu);
     document.body.appendChild(fab);
 }
@@ -264,12 +267,170 @@ function toggleFABMenu() {
     }
 }
 
-// Initialize FAB on page load
+// Feedback Summary Component
+function createFeedbackSummary() {
+    const feedbacks = JSON.parse(localStorage.getItem('comparedocsai_feedbackRatings') || '[]');
+    let average = 0;
+    let count = feedbacks.length;
+
+    // Real data only - Requested by user
+    if (count > 0) {
+        const sum = feedbacks.reduce((acc, curr) => acc + curr.rating, 0);
+        average = sum / count;
+        average = Math.round(average * 10) / 10;
+    } else {
+        average = 0;
+    }
+
+    const fullStars = Math.floor(average);
+    const hasHalfStar = average % 1 >= 0.5;
+
+    const container = document.getElementById('feedbackSummaryContainer');
+    if (!container) return;
+
+    // Only show if we have reviews, or show placeholder if that's preferred?
+    // User asked for "real", so we show what we have. 
+    // If 0 reviews, we show 0 reviews.
+
+    container.innerHTML = `
+        <div class="feedback-summary animate-in fade-in slide-in-from-bottom-2" style="margin-top: 2rem;">
+            <div class="feedback-summary-content">
+                <div class="feedback-stars-display">
+                    ${[1, 2, 3, 4, 5].map(i => {
+        let classList = 'star-icon';
+        if (i <= fullStars) classList += ' filled';
+        else if (i === fullStars + 1 && hasHalfStar) classList += ' filled';
+
+        return `
+                        <svg class="${classList}" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                        `;
+    }).join('')}
+                    <span class="feedback-average">${count > 0 ? average : 'No ratings yet'}</span>
+                </div>
+                <div class="feedback-count">
+                    Based on <strong>${count}</strong> reviews
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Initialize components on page load
 document.addEventListener('DOMContentLoaded', () => {
     createFAB();
+    createFeedbackSummary();
+
+    // Also init social proof if container exists (it was defined but not called in previous snippet view, assumes it might be needed)
+    const spContainer = document.getElementById('socialProofContainer');
+    if (spContainer && typeof createSocialProof === 'function') {
+        spContainer.innerHTML = createSocialProof();
+    }
+
+    // Also init In-app tips
+    const tipsContainer = document.getElementById('inAppTipsContainer');
+    if (tipsContainer && typeof showInAppTip === 'function') {
+        showInAppTip(tipsContainer);
+    }
 });
 
 // Make functions global
 window.dismissTip = dismissTip;
 window.submitFeedback = submitFeedback;
 window.closeFeedback = closeFeedback;
+
+// Contact Modal Component
+function showContactModal() {
+    // Check if already showing
+    if (document.getElementById('contactOverlay')) return;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'contact-overlay';
+    overlay.id = 'contactOverlay';
+    overlay.innerHTML = `
+        <div class="contact-modal animate-in zoom-in">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary);">Contact Support</h3>
+                <button onclick="closeContactModal()" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 24px;">×</button>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Found an issue or have a suggestion? Send us a message directly.
+            </p>
+            
+            <input type="text" id="contactEmail" class="contact-input" placeholder="Your Email (Optional)" />
+            <textarea id="contactMessage" class="contact-textarea" placeholder="How can we help you?"></textarea>
+            
+            <div class="contact-buttons">
+                <button onclick="closeContactModal()" class="btn btn-secondary">Cancel</button>
+                <button onclick="submitContactMessage()" class="btn btn-primary" id="btnSendContact">Send Message</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function closeContactModal() {
+    const overlay = document.getElementById('contactOverlay');
+    if (overlay) {
+        overlay.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => {
+            overlay.remove();
+        }, 300);
+    }
+}
+
+async function submitContactMessage() {
+    const messageInput = document.getElementById('contactMessage');
+    const emailInput = document.getElementById('contactEmail');
+    const btn = document.getElementById('btnSendContact');
+
+    if (!messageInput || !messageInput.value.trim()) {
+        alert('Please enter a message.');
+        return;
+    }
+
+    const message = messageInput.value.trim();
+    const contact = emailInput ? emailInput.value.trim() : '';
+
+    // Disable button
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    try {
+        const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message, contact })
+        });
+
+        if (response.ok) {
+            // Show success
+            const modal = document.querySelector('.contact-modal');
+            modal.innerHTML = `
+                <div style="text-align: center; padding: 2rem 0;">
+                    <div style="background: #d1fae5; border-radius: 50%; width: 64px; height: 64px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 32px;">✓</div>
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Message Sent!</h3>
+                    <p style="color: var(--text-secondary);">We'll get back to you shortly.</p>
+                </div>
+            `;
+            setTimeout(() => {
+                closeContactModal();
+            }, 2500);
+        } else {
+            throw new Error('Failed to send');
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Failed to send message. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
+    }
+}
+
+// Make globally available
+window.showContactModal = showContactModal;
+window.closeContactModal = closeContactModal;
+window.submitContactMessage = submitContactMessage;

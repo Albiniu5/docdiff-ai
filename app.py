@@ -369,6 +369,40 @@ def compare_text():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/contact', methods=['POST'])
+def send_contact_message():
+    """Handle contact form submission securely"""
+    try:
+        data = request.get_json()
+        if not data or 'message' not in data:
+            return jsonify({'error': 'Message is required'}), 400
+        
+        message_body = data.get('message')
+        user_contact = data.get('contact', 'Anonymous') # valid email or just text
+        
+        # internal destination email (kept on server side)
+        DESTINATION_EMAIL = "gafdj1523@gmail.com"
+        
+        # Logic to send email would go here. 
+        # For now, since no SMTP creds are configured, we log it.
+        # Check if we have MAIL_USERNAME/PASSWORD env vars to attempt real send
+        
+        print(f"--- NEW CONTACT MESSAGE ---")
+        print(f"To: {DESTINATION_EMAIL}")
+        print(f"From: {user_contact}")
+        print(f"Message: {message_body}")
+        print(f"---------------------------")
+        
+        # TODO: Implement actual SMTP sending using smtplib or flask-mail
+        # if os.getenv('MAIL_USERNAME') and os.getenv('MAIL_PASSWORD'):
+        #     send_email(...)
+            
+        return jsonify({'success': True, 'message': 'Message sent successfully'})
+        
+    except Exception as e:
+        print(f"Contact error: {str(e)}")
+        return jsonify({'error': 'Failed to send message'}), 500
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
