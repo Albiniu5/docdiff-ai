@@ -243,8 +243,9 @@ async function compareDocuments() {
     hideError();
     resultsSection.style.display = 'none';
 
-    // Show loading
+    // Show loading with progress animation
     loadingState.style.display = 'block';
+    loadingState.innerHTML = showProgressAnimation('Analyzing documents with AI...');
     compareBtn.disabled = true;
 
     try {
@@ -296,6 +297,33 @@ async function compareDocuments() {
 
         // Display results
         displayResults(data);
+        
+        // Gamification: Award points and track conversions
+        if (typeof awardPoints === 'function') {
+            awardPoints(10, 'Comparison completed');
+        }
+        if (typeof incrementConversions === 'function') {
+            const userData = incrementConversions();
+            // Show achievement badge if new one was earned
+            if (userData.hasNewBadges && userData.newBadges.length > 0) {
+                const badge = userData.newBadges[userData.newBadges.length - 1];
+                setTimeout(() => {
+                    alert(`🏆 Achievement Unlocked: ${badge.emoji} ${badge.name} - ${badge.description}`);
+                }, 500);
+            }
+            // Refresh social proof banner with updated stats
+            const socialProofContainer = document.getElementById('socialProofContainer');
+            if (socialProofContainer && typeof createSocialProof === 'function') {
+                socialProofContainer.innerHTML = createSocialProof();
+            }
+        }
+        
+        // Show feedback survey after successful comparison
+        setTimeout(() => {
+            if (typeof showPostConversionFeedback === 'function') {
+                showPostConversionFeedback();
+            }
+        }, 1500);
 
     } catch (error) {
         showError(error.message || 'An error occurred while comparing');
@@ -499,6 +527,18 @@ function resetComparison() {
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     initDragAndDrop();
+
+    // Initialize social proof banner (index.html only)
+    const socialProofContainer = document.getElementById('socialProofContainer');
+    if (socialProofContainer && typeof createSocialProof === 'function') {
+        socialProofContainer.innerHTML = createSocialProof();
+    }
+
+    // Initialize in-app tips (index.html only)
+    const inAppTipsContainer = document.getElementById('inAppTipsContainer');
+    if (inAppTipsContainer && typeof showInAppTip === 'function') {
+        showInAppTip(inAppTipsContainer);
+    }
 
     // Toggle mode
     if (inputModeToggle) {

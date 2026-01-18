@@ -848,3 +848,349 @@ input:checked+.slider:before {
         grid-template-columns: 1fr;
     }
 }
+
+/* ===================================
+   MOBILE OPTIMIZATIONS
+   =================================== */
+/* Prevent iOS zoom on input focus */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="file"],
+textarea,
+select {
+    font-size: 16px !important;
+}
+
+/* Better touch targets on mobile */
+button,
+a,
+[role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Improve tap highlight */
+* {
+    -webkit-tap-highlight-color: rgba(0, 102, 255, 0.1);
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Prevent text selection on buttons */
+button {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Touch-friendly utilities */
+.touch-manipulation {
+    touch-action: manipulation;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromBottom {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-in {
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+}
+
+.fade-in {
+    animation-name: fadeIn;
+}
+
+.slide-in-from-top-2 {
+    animation-name: slideInFromTop;
+}
+
+.slide-in-from-bottom-2 {
+    animation-name: slideInFromBottom;
+}
+
+.zoom-in {
+    animation-name: zoomIn;
+}
+
+/* Floating Action Button (FAB) */
+.fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    z-index: 1000;
+    transition: all var(--transition);
+    touch-action: manipulation;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.fab:active {
+    transform: scale(0.95);
+}
+
+.fab-menu {
+    position: fixed;
+    bottom: 96px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 999;
+}
+
+.fab-menu-item {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: white;
+    color: var(--accent-primary);
+    border: 2px solid var(--accent-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all var(--transition);
+    touch-action: manipulation;
+}
+
+.fab-menu-item:hover {
+    transform: scale(1.1);
+    background: var(--accent-light);
+}
+
+/* Social Proof Banner - Hidden */
+.social-proof {
+    display: none !important;
+}
+
+.social-proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    text-align: center;
+}
+
+.social-proof-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.social-proof-icon {
+    color: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.social-proof-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.social-proof-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.social-proof-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* In-App Tips */
+.in-app-tip {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--radius-sm);
+}
+
+.in-app-tip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+}
+
+.in-app-tip-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: var(--spacing-xs);
+}
+
+.in-app-tip-message {
+    font-size: 0.875rem;
+    color: #78350f;
+}
+
+.in-app-tip-close {
+    background: transparent;
+    border: none;
+    color: #f59e0b;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    min-width: 24px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Progress Animation */
+.progress-animation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl) 0;
+    gap: var(--spacing-md);
+}
+
+.progress-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.progress-message {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Post Conversion Feedback */
+.feedback-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: var(--spacing-md);
+}
+
+.feedback-modal {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    max-width: 400px;
+    width: 100%;
+}
+
+.feedback-stars {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    margin: var(--spacing-md) 0;
+}
+
+.feedback-star {
+    background: transparent;
+    border: none;
+    color: #d1d5db;
+    cursor: pointer;
+    font-size: 32px;
+    padding: var(--spacing-xs);
+    min-width: 44px;
+    min-height: 44px;
+    transition: all var(--transition);
+}
+
+.feedback-star:hover,
+.feedback-star.active {
+    color: #fbbf24;
+    transform: scale(1.1);
+}
+
+/* Hide FAB on desktop */
+@media (min-width: 769px) {
+    .fab {
+        display: none;
+    }
+    
+    .fab-menu {
+        display: none;
+    }
+}
