@@ -245,7 +245,7 @@ async function compareDocuments() {
 
     // Show loading with progress animation
     loadingState.style.display = 'block';
-    loadingState.innerHTML = showProgressAnimation('Analyzing documents with AI...');
+    loadingState.innerHTML = showProgressAnimation('Uploading and analyzing documents...');
     compareBtn.disabled = true;
 
     try {
@@ -349,19 +349,14 @@ function displayResults(data) {
         comparisonData = JSON.parse(cleanedResponse);
     } catch (error) {
         console.error('Failed to parse AI response:', error);
-        // Fallback: display raw response
-        comparisonData = {
-            summary: data.comparison,
-            additions: [],
-            deletions: [],
-            modifications: [],
-            statistics: {
-                total_changes: 0,
-                additions_count: 0,
-                deletions_count: 0,
-                modifications_count: 0
-            }
-        };
+        showError("I'm sorry, this data cannot be extracted. The file content may be unclear or unsupported.");
+        return;
+    }
+
+    // Check for empty or invalid data structure after parsing
+    if (!comparisonData || (!comparisonData.summary && !comparisonData.additions && !comparisonData.deletions && !comparisonData.modifications)) {
+        showError("I'm sorry, this data cannot be extracted. No valid text or tables were found.");
+        return;
     }
 
     // Display summary
@@ -483,12 +478,10 @@ function displayResults(data) {
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
 
-            // 3. Prompt Contact Modal after small delay
-            setTimeout(() => {
-                if (typeof showContactModal === 'function') {
-                    showContactModal();
-                }
-            }, 1500);
+            // 3. Prompt Contact Modal immediately
+            if (typeof showContactModal === 'function') {
+                showContactModal();
+            }
         });
     }
 }
