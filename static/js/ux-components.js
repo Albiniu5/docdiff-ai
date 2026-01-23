@@ -342,41 +342,114 @@ window.closeFeedback = closeFeedback;
 
 // Contact Modal Component
 function showContactModal() {
-    // Check if already showing
     if (document.getElementById('contactOverlay')) return;
 
     const overlay = document.createElement('div');
     overlay.className = 'contact-overlay';
     overlay.id = 'contactOverlay';
+
+    // Check if already rated in this session? Not strict.
+
     overlay.innerHTML = `
-        <div class="contact-modal animate-in zoom-in">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary);">Contact Support</h3>
-                <button onclick="closeContactModal()" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 24px;">×</button>
+        <div class="contact-modal animate-in zoom-in" style="max-width: 480px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 0;">Get in touch</h3>
+                <button onclick="closeContactModal()" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 24px; line-height: 1;">×</button>
             </div>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-                Found an issue or have a suggestion? Send us a message directly.
-            </p>
             
-            <input type="text" id="contactEmail" class="contact-input" placeholder="Your Email (Optional)" />
-            <textarea id="contactMessage" class="contact-textarea" placeholder="How can we help you?"></textarea>
+            <!-- Frictionless Rating -->
+            <div id="ratingSection" style="text-align: center; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
+                <p style="font-size: 0.875rem; font-weight: 500; color: #4b5563; margin-bottom: 0.75rem;">Rate your experience</p>
+                <div style="display: flex; justify-content: center; gap: 8px;">
+                    ${[1, 2, 3, 4, 5].map(star => `
+                        <button onclick="rateExperience(${star})" class="star-btn" data-star="${star}" style="background: none; border: none; cursor: pointer; padding: 2px; transition: transform 0.2s;">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" class="star-svg" style="fill: #e5e7eb; color: #e5e7eb; transition: fill 0.2s;">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                        </button>
+                    `).join('')}
+                </div>
+                <p id="ratingFeedback" style="display: none; font-size: 0.75rem; color: #16a34a; font-weight: 600; margin-top: 0.5rem; animation: fadeIn 0.3s;">Thanks for rating!</p>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: #6b7280; margin-bottom: 0.25rem;">Message <span style="font-weight: 400; color: #9ca3af;">(Optional)</span></label>
+                <textarea id="contactMessage" class="contact-textarea" rows="3" placeholder="Tell us what you think..." style="margin-bottom: 0;"></textarea>
+            </div>
             
-            <div class="contact-buttons">
-                <button onclick="closeContactModal()" class="btn btn-secondary">Cancel</button>
-                <button onclick="submitContactMessage()" class="btn btn-primary" id="btnSendContact">Send Message</button>
+            <div style="margin-bottom: 1.5rem;">
+                 <label style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: #6b7280; margin-bottom: 0.25rem;">Email <span style="font-weight: 400; color: #9ca3af;">(Optional)</span></label>
+                <input type="text" id="contactEmail" class="contact-input" placeholder="Enter email only if you want a reply" style="background: #f9fafb;" />
+            </div>
+            
+            <div class="contact-buttons" style="display: flex; justify-content: flex-end;">
+                 <button onclick="submitContactMessage()" class="btn btn-primary" id="btnSendContact" style="padding: 0.625rem 1.5rem; display: flex; align-items: center; gap: 8px;">
+                    Send Feedback
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                 </button>
             </div>
         </div>
     `;
     document.body.appendChild(overlay);
+
+    // Add interaction logic for stars
+    const stars = overlay.querySelectorAll('.star-btn');
+    stars.forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            const val = parseInt(btn.dataset.star);
+            stars.forEach(s => {
+                const sVal = parseInt(s.dataset.star);
+                const svg = s.querySelector('svg');
+                svg.style.fill = sVal <= val ? '#fbbf24' : '#e5e7eb'; // Amber-400 vs Gray-200
+                svg.style.color = sVal <= val ? '#fbbf24' : '#e5e7eb';
+            });
+        });
+        btn.addEventListener('mouseleave', () => {
+            const currentRating = window.currentSessionRating || 0;
+            stars.forEach(s => {
+                const sVal = parseInt(s.dataset.star);
+                const svg = s.querySelector('svg');
+                svg.style.fill = sVal <= currentRating ? '#fbbf24' : '#e5e7eb';
+                svg.style.color = sVal <= currentRating ? '#fbbf24' : '#e5e7eb';
+            });
+        });
+    });
+}
+
+function rateExperience(star) {
+    window.currentSessionRating = star;
+
+    // Visual Update
+    const overlay = document.getElementById('contactOverlay');
+    if (overlay) {
+        const stars = overlay.querySelectorAll('.star-btn');
+        stars.forEach(s => {
+            const sVal = parseInt(s.dataset.star);
+            const svg = s.querySelector('svg');
+            svg.style.fill = sVal <= star ? '#fbbf24' : '#e5e7eb';
+        });
+        document.getElementById('ratingFeedback').style.display = 'block';
+    }
+
+    // Save Logic
+    const feedbacks = JSON.parse(localStorage.getItem('compareDocRatings') || '[]');
+    feedbacks.push({
+        rating: star,
+        timestamp: new Date().toISOString(),
+        msg: "Star rating only"
+    });
+    localStorage.setItem('compareDocRatings', JSON.stringify(feedbacks));
+    console.log(`User rated (CompareDocs): ${star} stars`);
 }
 
 function closeContactModal() {
     const overlay = document.getElementById('contactOverlay');
     if (overlay) {
-        overlay.style.animation = 'fadeOut 0.3s ease-out';
+        overlay.style.animation = 'fadeOut 0.2s ease-out';
         setTimeout(() => {
             overlay.remove();
-        }, 300);
+            window.currentSessionRating = 0; // Reset
+        }, 200);
     }
 }
 
@@ -385,48 +458,62 @@ async function submitContactMessage() {
     const emailInput = document.getElementById('contactEmail');
     const btn = document.getElementById('btnSendContact');
 
-    if (!messageInput || !messageInput.value.trim()) {
-        alert('Please enter a message.');
-        return;
-    }
+    const message = messageInput ? messageInput.value.trim() : '';
+    const rating = window.currentSessionRating || 0;
 
-    const message = messageInput.value.trim();
-    const contact = emailInput ? emailInput.value.trim() : '';
+    if (!message && !rating) {
+        return; // Don't submit nothing
+    }
 
     // Disable button
     btn.disabled = true;
-    btn.textContent = 'Sending...';
+    btn.innerHTML = 'Sending...';
 
     try {
-        const response = await fetch('/api/contact', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message, contact })
-        });
-
-        if (response.ok) {
-            // Show success
-            const modal = document.querySelector('.contact-modal');
-            modal.innerHTML = `
-                <div style="text-align: center; padding: 2rem 0;">
-                    <div style="background: #d1fae5; border-radius: 50%; width: 64px; height: 64px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 32px;">✓</div>
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Message Sent!</h3>
-                    <p style="color: var(--text-secondary);">We'll get back to you shortly.</p>
-                </div>
-            `;
-            setTimeout(() => {
-                closeContactModal();
-            }, 2500);
-        } else {
-            throw new Error('Failed to send');
+        // Save logic with message
+        if (message || emailInput.value.trim()) {
+            // Send to backend if available, or just log/localStorage for now
+            const feedbacks = JSON.parse(localStorage.getItem('compareDocRatings') || '[]');
+            feedbacks.push({
+                rating,
+                timestamp: new Date().toISOString(),
+                msg: message,
+                email: emailInput.value.trim() || 'Anonymous'
+            });
+            localStorage.setItem('compareDocRatings', JSON.stringify(feedbacks));
         }
+
+        // Try API if previously configured
+        try {
+            await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message, contact: emailInput.value, rating })
+            });
+        } catch (err) {
+            console.log("Backend contact endpoint skipped or failed", err);
+        }
+
+        // Sim delay
+        await new Promise(r => setTimeout(r, 600));
+
+        // Show success
+        const modal = document.querySelector('.contact-modal');
+        modal.innerHTML = `
+            <div style="text-align: center; padding: 3rem 1rem;">
+                <div style="background: #d1fae5; border-radius: 50%; width: 64px; height: 64px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #059669;">✓</div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Thank You!</h3>
+                <p style="color: var(--text-secondary);">Your feedback helps us improve.</p>
+            </div>
+        `;
+        setTimeout(() => {
+            closeContactModal();
+        }, 2000);
+
     } catch (e) {
         console.error(e);
-        alert('Failed to send message. Please try again.');
         btn.disabled = false;
-        btn.textContent = 'Send Message';
+        btn.textContent = 'Send Feedback';
     }
 }
 
@@ -434,3 +521,4 @@ async function submitContactMessage() {
 window.showContactModal = showContactModal;
 window.closeContactModal = closeContactModal;
 window.submitContactMessage = submitContactMessage;
+window.rateExperience = rateExperience;

@@ -269,6 +269,10 @@ def sitemap():
 def robots():
     return send_from_directory('static', 'robots.txt')
 
+@app.route('/ads.txt')
+def ads_txt():
+    return send_from_directory('static', 'ads.txt')
+
 @app.route('/compare')
 def compare_page():
     """Serve comparison page"""
