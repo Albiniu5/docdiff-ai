@@ -56,6 +56,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
+    <!-- EmailJS SDK (local fallback to avoid blocking) -->
+    <script src="/static/js/email-sdk.js?v=2.1"></script>
+    <script>
+        // Initialize EmailJS when DOM is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const publicKey = "fJd1qwuHKSLPaXO0E";
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(publicKey);
+                console.log('✅ EmailJS initialized');
+            } else {
+                console.error('❌ EmailJS failed to load');
+            }
+        });
+    </script>
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -222,6 +237,12 @@
                 <div id="loadingState" class="loading-state" style="display: none;">
                     <div class="loading-spinner"></div>
                     <p>Analyzing documents with AI...</p>
+                    <div class="progress-container"
+                        style="width: 100%; max-width: 300px; height: 6px; background: #e2e8f0; border-radius: 3px; margin: 15px auto; overflow: hidden;">
+                        <div id="progressBar"
+                            style="width: 0%; height: 100%; background: var(--primary-color); transition: width 0.3s ease;">
+                        </div>
+                    </div>
                     <p class="loading-subtext">This may take a few seconds</p>
                 </div>
             </div>
@@ -415,13 +436,15 @@
                     responsible for verifying the accuracy of any comparisons. The operators of this site are not liable
                     for any damages, errors, or omissions arising from the use of this tool.</p>
             </div>
+            <p style="text-align: center; margin-top: 2rem;">&copy; 2026 Compare Docs AI. Built with AI, designed for
+                privacy. <span style="color: #999; font-size: 0.8em;">v2.2</span></p>
         </div>
     </footer>
 
     <!-- Load gamification and UX components -->
-    <script src="/static/js/gamification.js"></script>
-    <script src="/static/js/ux-components.js"></script>
-    <script src="/static/js/compare.js"></script>
+    <script src="/static/js/gamification.js?v=2.2"></script>
+    <script src="/static/js/ux-components.js?v=2.2"></script>
+    <script src="/static/js/compare.js?v=2.2"></script>
 </body>
 
 </html>
