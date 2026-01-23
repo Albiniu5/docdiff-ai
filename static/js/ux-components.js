@@ -1,4 +1,4 @@
-// UX Components for comparedocsai - vanilla JS implementations
+    // UX Components for comparedocsai - vanilla JS implementations
 
 // Social Proof Component
 function createSocialProof() {
@@ -488,43 +488,29 @@ async function submitContactMessage() {
         const templateID = 'template_qgdup6l';
 
         // Send via EmailJS using sendForm (more reliable)
-        try {
-            const userName = emailInput.value.split('@')[0] || 'User';
-            const userEmail = emailInput.value || 'anonymous@comparedocsai.com';
+                try {
+            // Wait for EmailJS if not ready yet
+            if (typeof emailjs === 'undefined') {
+                await new Promise(r => setTimeout(r, 1000));
+            }
+            
+            const userName = emailInput.value ? emailInput.value.split('@')[0] : 'User';
+            const userEmail = emailInput.value || 'not-provided@comparedocsai.com';
 
-            // Create temporary form for sendForm
-            const tempForm = document.createElement('form');
-            tempForm.style.display = 'none';
-
-            // Add all fields with multiple email aliases
-            const formFields = {
-                'from_name': userName,
-                'from_email': userEmail,
-                'user_email': userEmail,
-                'email': userEmail,
-                'reply_to': userEmail,
-                'to_name': 'Admin',
-                'message': message + ` [Rating: ${rating}/5 stars]`,
-                'rating': rating,
-                'source': 'Download/Result Feedback'
-            };
-
-            Object.entries(formFields).forEach(([name, value]) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = name;
-                input.value = value;
-                tempForm.appendChild(input);
+            await emailjs.send(serviceID, templateID, {
+                from_name: userName,
+                from_email: userEmail,
+                user_name: userName,
+                user_email: emailInput.value || 'Not provided',
+                rating: rating,
+                message: message || 'No message provided',
+                subject: `New ${rating}-Star Rating`,
+                user_id: 'download-feedback',
+                timestamp: new Date().toLocaleString()
             });
-
-            document.body.appendChild(tempForm);
-            await emailjs.sendForm(serviceID, templateID, tempForm);
-            document.body.removeChild(tempForm);
-
-            console.log('✅ Feedback email sent via EmailJS (sendForm)');
+            console.log('✅ Email sent');
         } catch (err) {
-            console.error('❌ EmailJS sending failed:', err);
-            // Don't block success message for user, just log error
+            console.error('❌ Email failed:', err);
         }
 
         // Show success
