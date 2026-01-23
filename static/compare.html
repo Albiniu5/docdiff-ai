@@ -25,14 +25,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function () {
-            // Using keys from PicToCSV configuration
+    <!-- EmailJS SDK (synchronous load) -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        // Initialize EmailJS when DOM is ready
+        document.addEventListener('DOMContentLoaded', function () {
             const publicKey = "fJd1qwuHKSLPaXO0E";
-            emailjs.init(publicKey);
-        })();
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(publicKey);
+                console.log('✅ EmailJS initialized');
+            } else {
+                console.error('❌ EmailJS failed to load');
+            }
+        });
     </script>
 
     <!-- FAQ Schema (JSON-LD) -->

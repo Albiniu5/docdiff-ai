@@ -128,6 +128,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="from_name">Name</label>
+                    <input type="text" id="from_name" name="from_name" required placeholder="Your Name">
+                </div>
+
+                <div class="form-group">
                     <label for="reply_to">Email (Optional)</label>
                     <input type="email" id="reply_to" name="reply_to" placeholder="your@email.com (optional)">
                     <small style="color: var(--text-muted);">If you want a reply, please include your email.</small>
@@ -139,6 +144,7 @@
                 </div>
 
                 <!-- Hidden aliases to ensure template match -->
+                <input type="hidden" name="user_name" id="hidden_user_name">
                 <input type="hidden" name="user_email" id="hidden_user_email">
                 <input type="hidden" name="email" id="hidden_email">
                 <input type="hidden" name="from_email" id="hidden_from_email">
@@ -172,9 +178,11 @@
 
             // Copy email to aliases
             const emailVal = document.getElementById('reply_to').value;
+            const nameVal = document.getElementById('from_name').value;
             document.getElementById('hidden_user_email').value = emailVal;
             document.getElementById('hidden_email').value = emailVal;
             document.getElementById('hidden_from_email').value = emailVal;
+            document.getElementById('hidden_user_name').value = nameVal;
 
             // Disable button and show loading state
             btn.innerHTML = 'Sending...';
