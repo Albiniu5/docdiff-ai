@@ -487,28 +487,41 @@ async function submitContactMessage() {
         const serviceID = 'service_vs5qx0p';
         const templateID = 'template_qgdup6l';
 
-        // Send via EmailJS
+        // Send via EmailJS using sendForm (more reliable)
         try {
             const userName = emailInput.value.split('@')[0] || 'User';
             const userEmail = emailInput.value || 'anonymous@comparedocsai.com';
 
-            await emailjs.send(serviceID, templateID, {
-                // Standard fields matches PicToCSV pattern
-                from_name: userName,
-                from_email: userEmail,
-                reply_to: emailInput.value || '',
-                to_name: 'Admin',
+            // Create temporary form for sendForm
+            const tempForm = document.createElement('form');
+            tempForm.style.display = 'none';
 
-                // Custom fields expected by template
-                user_name: userName,
-                user_email: userEmail,
-                subject: `New Feedback: ${rating} Stars`,
-                message: message,
-                rating: rating,
-                source: 'Download/Result Feedback',
-                timestamp: new Date().toLocaleString()
+            // Add all fields with multiple email aliases
+            const formFields = {
+                'from_name': userName,
+                'from_email': userEmail,
+                'user_email': userEmail,
+                'email': userEmail,
+                'reply_to': userEmail,
+                'to_name': 'Admin',
+                'message': message + ` [Rating: ${rating}/5 stars]`,
+                'rating': rating,
+                'source': 'Download/Result Feedback'
+            };
+
+            Object.entries(formFields).forEach(([name, value]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                tempForm.appendChild(input);
             });
-            console.log('✅ Feedback email sent via EmailJS');
+
+            document.body.appendChild(tempForm);
+            await emailjs.sendForm(serviceID, templateID, tempForm);
+            document.body.removeChild(tempForm);
+
+            console.log('✅ Feedback email sent via EmailJS (sendForm)');
         } catch (err) {
             console.error('❌ EmailJS sending failed:', err);
             // Don't block success message for user, just log error
