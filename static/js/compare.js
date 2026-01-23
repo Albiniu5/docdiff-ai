@@ -20,6 +20,7 @@ const errorMessage = document.getElementById('errorMessage');
 const loadingState = document.getElementById('loadingState');
 const resultsSection = document.getElementById('resultsSection');
 const newCompareBtn = document.getElementById('newCompareBtn');
+const progressBar = document.getElementById('progressBar');
 
 // Text input elements
 const textInputA = document.getElementById('textInputA');
@@ -245,7 +246,31 @@ async function compareDocuments() {
 
     // Show loading with progress animation
     loadingState.style.display = 'block';
-    loadingState.innerHTML = showProgressAnimation('Uploading and analyzing documents...');
+
+    // Convert to absolute URLs to check if we are on the same page
+    const currentUrl = new URL(window.location.href);
+    const loadingStateUrl = new URL(currentUrl.origin + currentUrl.pathname);
+
+    // Reset progress bar
+    if (progressBar) {
+        progressBar.style.width = '0%';
+        let progress = 0;
+
+        // Simulated progress animation
+        const interval = setInterval(() => {
+            // Logarithmic progress: fast start, slow finish, capping at 90%
+            if (progress < 90) {
+                // Decreasing increment as progress increases
+                const increment = Math.max(0.5, (90 - progress) / 20);
+                progress += increment;
+                progressBar.style.width = `${progress}%`;
+            }
+        }, 100);
+
+        // Store interval ID to clear it later (attach to progressBar element)
+        progressBar.dataset.intervalId = interval;
+    }
+
     compareBtn.disabled = true;
 
     try {
@@ -292,7 +317,22 @@ async function compareDocuments() {
         const data = await response.json();
 
         if (!response.ok) {
+            // Stop progress bar on error
+            if (progressBar && progressBar.dataset.intervalId) {
+                clearInterval(progressBar.dataset.intervalId);
+            }
             throw new Error(data.error || 'Comparison failed');
+        }
+
+        // Complete progress bar
+        if (progressBar) {
+            if (progressBar.dataset.intervalId) {
+                clearInterval(progressBar.dataset.intervalId);
+            }
+            progressBar.style.width = '100%';
+
+            // Short delay to let user see 100%
+            await new Promise(resolve => setTimeout(resolve, 500));
         }
 
         // Display results
@@ -326,6 +366,10 @@ async function compareDocuments() {
         }, 1500);
 
     } catch (error) {
+        // Clear progress interval if error
+        if (progressBar && progressBar.dataset.intervalId) {
+            clearInterval(progressBar.dataset.intervalId);
+        }
         showError(error.message || 'An error occurred while comparing');
         console.error('Comparison error:', error);
     } finally {
