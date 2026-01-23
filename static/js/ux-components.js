@@ -483,19 +483,26 @@ async function submitContactMessage() {
             localStorage.setItem('compareDocRatings', JSON.stringify(feedbacks));
         }
 
-        // Try API if previously configured
-        try {
-            await fetch('/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message, contact: emailInput.value, rating })
-            });
-        } catch (err) {
-            console.log("Backend contact endpoint skipped or failed", err);
-        }
+        // Initialize EmailJS variables
+        const serviceID = 'service_vs5qx0p';
+        const templateID = 'template_qgdup6l';
 
-        // Sim delay
-        await new Promise(r => setTimeout(r, 600));
+        // Send via EmailJS
+        try {
+            await emailjs.send(serviceID, templateID, {
+                from_name: emailInput.value.split('@')[0] || 'User',
+                from_email: emailInput.value || 'anonymous@comparedocsai.com',
+                reply_to: emailInput.value || '',
+                message: message,
+                rating: rating,
+                source: 'Download/Result Feedback',
+                timestamp: new Date().toLocaleString()
+            });
+            console.log('✅ Feedback email sent via EmailJS');
+        } catch (err) {
+            console.error('❌ EmailJS sending failed:', err);
+            // Don't block success message for user, just log error
+        }
 
         // Show success
         const modal = document.querySelector('.contact-modal');
