@@ -138,6 +138,11 @@
                     <textarea id="message" name="message" rows="5" required placeholder="How can we help?"></textarea>
                 </div>
 
+                <!-- Hidden aliases to ensure template match -->
+                <input type="hidden" name="user_email" id="hidden_user_email">
+                <input type="hidden" name="email" id="hidden_email">
+                <input type="hidden" name="from_email" id="hidden_from_email">
+
                 <button type="submit" class="btn btn-primary" id="submitBtn">Send Message</button>
             </form>
 
@@ -164,6 +169,12 @@
 
             const btn = document.getElementById('submitBtn');
             const status = document.getElementById('statusMessage');
+
+            // Copy email to aliases
+            const emailVal = document.getElementById('reply_to').value;
+            document.getElementById('hidden_user_email').value = emailVal;
+            document.getElementById('hidden_email').value = emailVal;
+            document.getElementById('hidden_from_email').value = emailVal;
 
             // Disable button and show loading state
             btn.innerHTML = 'Sending...';
