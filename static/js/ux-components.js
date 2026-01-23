@@ -1,4 +1,4 @@
-    // UX Components for comparedocsai - vanilla JS implementations
+// UX Components for comparedocsai - vanilla JS implementations
 
 // Social Proof Component
 function createSocialProof() {
@@ -488,12 +488,19 @@ async function submitContactMessage() {
         const templateID = 'template_qgdup6l';
 
         // Send via EmailJS using sendForm (more reliable)
-                try {
-            // Wait for EmailJS if not ready yet
-            if (typeof emailjs === 'undefined') {
-                await new Promise(r => setTimeout(r, 1000));
+        try {
+            // Wait for EmailJS with retry loop (up to 5 seconds)
+            let retries = 0;
+            while (typeof emailjs === 'undefined' && retries < 10) {
+                console.log(`⏳ Waiting for EmailJS... (attempt ${retries + 1}/10)`);
+                await new Promise(r => setTimeout(r, 500));
+                retries++;
             }
-            
+
+            if (typeof emailjs === 'undefined') {
+                throw new Error('EmailJS SDK failed to load after 5 seconds');
+            }
+
             const userName = emailInput.value ? emailInput.value.split('@')[0] : 'User';
             const userEmail = emailInput.value || 'not-provided@comparedocsai.com';
 
