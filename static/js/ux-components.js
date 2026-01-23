@@ -489,10 +489,20 @@ async function submitContactMessage() {
 
         // Send via EmailJS
         try {
+            const userName = emailInput.value.split('@')[0] || 'User';
+            const userEmail = emailInput.value || 'anonymous@comparedocsai.com';
+
             await emailjs.send(serviceID, templateID, {
-                from_name: emailInput.value.split('@')[0] || 'User',
-                from_email: emailInput.value || 'anonymous@comparedocsai.com',
+                // Standard fields matches PicToCSV pattern
+                from_name: userName,
+                from_email: userEmail,
                 reply_to: emailInput.value || '',
+                to_name: 'Admin',
+
+                // Custom fields expected by template
+                user_name: userName,
+                user_email: userEmail,
+                subject: `New Feedback: ${rating} Stars`,
                 message: message,
                 rating: rating,
                 source: 'Download/Result Feedback',
