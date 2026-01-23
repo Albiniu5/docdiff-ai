@@ -20,56 +20,129 @@
     <link rel="canonical" href="https://comparedocsai.com/contact" />
     <meta name="language" content="English">
     <link rel="stylesheet" href="/static/css/styles.css">
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            // Using keys from PicToCSV configuration
+            const publicKey = "fJd1qwuHKSLPaXO0E";
+            emailjs.init(publicKey);
+        })();
+    </script>
+
     <style>
-        .legal-content {
-            max-width: 800px;
+        .contact-content {
+            max-width: 600px;
             margin: 4rem auto;
             padding: 2rem;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
         }
 
         h1 {
             margin-bottom: 2rem;
-            color: #333;
+            color: var(--text-primary);
+            text-align: center;
         }
 
-        p {
-            margin-bottom: 1rem;
-            line-height: 1.6;
-            color: #666;
+        .form-group {
+            margin-bottom: 1.5rem;
         }
 
-        .contact-email {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #2563eb;
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+
+        #statusMessage {
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .success {
+            color: var(--success);
+        }
+
+        .error {
+            color: var(--error);
         }
     </style>
 </head>
 
 <body>
     <nav class="navbar">
-        <div class="nav-content">
-            <a href="/" class="logo">
-                <span class="logo-icon">📄</span>
-                <span>Compare Docs AI</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-            </ul>
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="logo">
+                    <span class="logo-icon">📄</span>
+                    <span>Compare Docs AI</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <div class="legal-content">
-        <h1>Contact Us</h1>
-        <p>We would love to hear from you. If you have any questions, suggestions for improvement, or need support
-            regarding Compare Docs AI, please feel free to reach out.</p>
+    <div class="container">
+        <div class="contact-content">
+            <h1>Contact Us</h1>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+                Have questions or feedback? We'd love to hear from you.
+            </p>
 
-        <h2>Email Support</h2>
-        <p>You can contact us directly at:</p>
-        <p class="contact-email">info@comparedocsai.com</p>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="from_name">Name</label>
+                    <input type="text" id="from_name" name="from_name" required placeholder="Your Name">
+                </div>
 
-        <h2>Processing Time</h2>
-        <p>We strive to respond to all inquiries within 24-48 hours.</p>
+                <div class="form-group">
+                    <label for="reply_to">Email (Optional)</label>
+                    <input type="email" id="reply_to" name="reply_to" placeholder="your@email.com (optional)">
+                    <small style="color: var(--text-muted);">If you want a reply, please include your email.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required placeholder="How can we help?"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">Send Message</button>
+            </form>
+
+            <div id="statusMessage"></div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -79,13 +152,50 @@
             <div class="footer-links">
                 <a href="/privacy">Privacy Policy</a> |
                 <a href="/terms">Terms & Conditions</a> |
+                <a href="/faq">FAQ</a> |
                 <a href="/contact">Contact Us</a>
-            </div>
-            <div class="legal-disclaimer">
-                <p><strong>Disclaimer:</strong> Compare Docs AI is provided "as is" and without warranty.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('statusMessage');
+
+            // Disable button and show loading state
+            btn.innerHTML = 'Sending...';
+            btn.disabled = true;
+            status.style.display = 'none';
+
+            // IDS from PicToCSV configuration
+            const serviceID = 'service_vs5qx0p';
+            const templateID = 'template_qgdup6l';
+
+            emailjs.sendForm(serviceID, templateID, this)
+                .then(() => {
+                    btn.innerHTML = 'Message Sent!';
+                    status.textContent = "Thanks! Your message has been sent successfully.";
+                    status.className = 'success';
+                    status.style.display = 'block';
+                    document.getElementById('contactForm').reset();
+
+                    setTimeout(() => {
+                        btn.innerHTML = 'Send Message';
+                        btn.disabled = false;
+                    }, 3000);
+                }, (err) => {
+                    btn.innerHTML = 'Send Message';
+                    btn.disabled = false;
+                    status.textContent = "Failed to send message. Please try again later or verify EmailJS config.";
+                    status.className = 'error';
+                    status.style.display = 'block';
+                    console.error('EmailJS Error:', err);
+                });
+        });
+    </script>
 </body>
 
 </html>

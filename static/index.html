@@ -56,7 +56,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -72,6 +71,27 @@
         "priceCurrency": "USD"
       },
       "featureList": "PDF Comparison, DOCX Comparison, Text Diff, AI Analysis"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "How accurate is AI document comparison?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AI document comparison is highly accurate because it understands the context and semantic meaning of text, not just raw character differences. Unlike traditional diff tools, it can detect moved paragraphs, rephrased sentences, and conceptual changes."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Is document comparison secure?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Security is our top priority. We use in-memory processing, meaning your files are analyzed in RAM and never saved to a permanent database or disk storage. Once the comparison session is complete, the data is automatically wiped."
+        }
+      }]
     }
     </script>
 </head>
@@ -301,40 +321,28 @@
         </div>
     </section>
 
-    <!-- FAQ Section (Added for AdSense "Valuable Inventory" compliance) -->
+    <!-- FAQ Section (Lite Version) -->
     <section id="faq" class="faq-section" style="padding: 4rem 0; background-color: #f9fafb;">
         <div class="container" style="max-width: 800px;">
             <h2 class="features-title" style="margin-bottom: 2rem;">Frequently Asked Questions</h2>
 
             <div class="faq-item" style="margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #111;">How does the AI document comparison
-                    work?</h3>
-                <p style="color: #4b5563; line-height: 1.6;">Unlike traditional "diff" tools that only spot character
-                    changes, our AI analyzes the semantic meaning of your documents. It can identify added clauses,
-                    modified terms, and removed sections even if the wording has changed slightly. This makes it perfect
-                    for reviewing contracts, legal agreements, and technical documentation.</p>
+                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #111;">How accurate is AI document
+                    comparison?</h3>
+                <p style="color: #4b5563; line-height: 1.6;">AI document comparison is highly accurate because it
+                    understands the context and semantic meaning of text, not just raw character differences. Unlike
+                    traditional "diff" tools, it can detect moved paragraphs, rephrased sentences, and conceptual
+                    changes.</p>
             </div>
 
             <div class="faq-item" style="margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #111;">Is my data safe?</h3>
-                <p style="color: #4b5563; line-height: 1.6;">Yes, absolutely. We prioritize your privacy. Files uploaded
-                    to Compare Docs AI are processed in temporary memory and are permanently deleted immediately after
-                    the analysis is complete. We do not store, share, or use your documents to train our models.</p>
+                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #111;">Is document comparison secure?</h3>
+                <p style="color: #4b5563; line-height: 1.6;">Security is our top priority. We use in-memory processing,
+                    meaning your files are analyzed in RAM and never saved to a permanent database or disk storage.</p>
             </div>
 
-            <div class="faq-item" style="margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #111;">What file formats do you support?
-                </h3>
-                <p style="color: #4b5563; line-height: 1.6;">We currently support PDF (`.pdf`), Word Documents
-                    (`.docx`), and plain text files (`.txt`). You can also copy and paste text directly into the
-                    comparison tool.</p>
-            </div>
-
-            <div class="faq-item" style="margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #111;">Is this tool really free?</h3>
-                <p style="color: #4b5563; line-height: 1.6;">Yes, Compare Docs AI is free to use. We support the
-                    platform through unobtrusive advertising, allowing us to provide high-quality AI analysis without
-                    charging a subscription fee.</p>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="/faq" class="btn btn-secondary">View All Questions</a>
             </div>
         </div>
     </section>

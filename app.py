@@ -261,6 +261,10 @@ def terms():
 def contact():
     return send_from_directory('static', 'contact.html')
 
+@app.route('/faq')
+def faq():
+    return send_from_directory('static', 'faq.html')
+
 @app.route('/sitemap.xml')
 def sitemap():
     return send_from_directory('static', 'sitemap.xml')

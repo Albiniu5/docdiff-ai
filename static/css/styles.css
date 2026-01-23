@@ -119,6 +119,22 @@ body {
     /* Fix vertical alignment */
 }
 
+/* Mobile cleanup: Hide extra links on small screens to prevent crowding */
+@media (max-width: 768px) {
+    .nav-links li:not(:last-child) {
+        display: none;
+    }
+
+    .logo {
+        font-size: 1.25rem;
+        /* Smaller logo font on mobile */
+    }
+
+    .logo-icon {
+        font-size: 1.5rem;
+    }
+}
+
 .nav-links a {
     color: var(--text-secondary);
     text-decoration: none;
@@ -140,9 +156,11 @@ body {
    HERO SECTION
    =================================== */
 .hero {
-    padding: var(--spacing-md) 0 var(--spacing-sm);
-    /* Reduced padding */
+    padding: var(--spacing-sm) 0 var(--spacing-xs);
+    /* further reduced top padding on mobile */
     text-align: center;
+    margin-top: 0;
+    /* ensure no extra margin */
 }
 
 .hero-content {
@@ -370,7 +388,7 @@ body {
     text-align: center;
     font-size: 2rem;
     font-weight: 700;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
 }
 
 .features-grid {

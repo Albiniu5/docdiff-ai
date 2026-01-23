@@ -24,6 +24,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FAQ Schema (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "Can I compare PDFs and Word files?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Compare Docs AI supports cross-format comparison. You can upload a PDF and compare it directly against a Word document (DOCX) or a plain text file."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Is document comparison secure?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Security is our top priority. We use in-memory processing, meaning your files are analyzed in RAM and never saved to a permanent database or disk storage."
+        }
+      }]
+    }
+    </script>
 </head>
 
 <body>
@@ -141,6 +164,34 @@
                     </h3>
                     <div class="changes-list" id="modificationsList"></div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contextual FAQ Section -->
+    <section class="faq-section" style="padding: 3rem 0; background-color: #f9fafb; margin-top: 3rem;">
+        <div class="container" style="max-width: 800px;">
+            <h2 style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 2rem;">Common Questions
+            </h2>
+
+            <div class="faq-item" style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #111;">Can I compare PDFs and Word files?
+                </h3>
+                <p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6;">Yes, Compare Docs AI supports
+                    cross-format comparison. You can upload a PDF and compare it directly against a Word document (DOCX)
+                    or a plain text file.</p>
+            </div>
+
+            <div class="faq-item" style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #111;">Is document comparison secure?</h3>
+                <p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6;">Security is our top priority. We use
+                    in-memory processing, meaning your files are analyzed in RAM and never saved to a permanent database
+                    or disk storage.</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <a href="/faq" style="color: var(--accent-primary); text-decoration: none; font-weight: 500;">View all
+                    FAQs &rarr;</a>
             </div>
         </div>
     </section>
