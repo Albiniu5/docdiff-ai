@@ -488,36 +488,55 @@ async function submitContactMessage() {
         const templateID = 'template_qgdup6l';
 
         // Send via EmailJS using sendForm (more reliable)
+        // Send via EmailJS (Robust Hybrid Approach)
         try {
-            // Wait for EmailJS with retry loop (up to 5 seconds)
-            let retries = 0;
-            while (typeof emailjs === 'undefined' && retries < 10) {
-                console.log(`⏳ Waiting for EmailJS... (attempt ${retries + 1}/10)`);
-                await new Promise(r => setTimeout(r, 500));
-                retries++;
-            }
-
-            if (typeof emailjs === 'undefined') {
-                throw new Error('EmailJS SDK failed to load after 5 seconds');
-            }
-
             const userName = emailInput.value ? emailInput.value.split('@')[0] : 'User';
             const userEmail = emailInput.value || 'not-provided@comparedocsai.com';
 
-            await emailjs.send(serviceID, templateID, {
-                from_name: userName,
-                from_email: userEmail,
-                user_name: userName,
-                user_email: emailInput.value || 'Not provided',
-                rating: rating,
-                message: message || 'No message provided',
-                subject: `New ${rating}-Star Rating`,
-                user_id: 'download-feedback',
-                timestamp: new Date().toLocaleString()
-            });
-            console.log('✅ Email sent');
+            // Prepare data for REST API
+            const restData = {
+                service_id: serviceID,
+                template_id: templateID,
+                user_id: 'fJd1qwuHKSLPaXO0E', // Public Key
+                template_params: {
+                    from_name: userName,
+                    from_email: userEmail,
+                    user_name: userName,
+                    user_email: emailInput.value || 'Not provided',
+                    rating: rating,
+                    message: message || 'No message provided',
+                    subject: `New ${rating}-Star Rating`,
+                    user_id: 'download-feedback',
+                    timestamp: new Date().toLocaleString()
+                }
+            };
+
+            // 1. Try SDK if available
+            if (typeof emailjs !== 'undefined') {
+                console.log('📧 Sending via SDK...');
+                await emailjs.send(serviceID, templateID, restData.template_params);
+            }
+            // 2. Fallback to REST API (No SDK needed)
+            else {
+                console.log('⚠️ SDK missing. Sending via REST API...');
+                const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(restData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('REST API failed: ' + await response.text());
+                }
+            }
+
+            console.log('✅ Email sent successfully');
         } catch (err) {
             console.error('❌ Email failed:', err);
+            alert("Could not send feedback. Please try again later or email us directly.");
+            btn.disabled = false;
+            btn.textContent = 'Send Feedback';
+            return;
         }
 
         // Show success
