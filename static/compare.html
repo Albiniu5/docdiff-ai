@@ -25,8 +25,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- EmailJS SDK (synchronous load) -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <!-- EmailJS SDK (local fallback to avoid blocking) -->
+    <script src="/static/js/email-sdk.js?v=2.1"></script>
     <script>
         // Initialize EmailJS when DOM is ready
         document.addEventListener('DOMContentLoaded', function () {
