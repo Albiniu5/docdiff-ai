@@ -134,6 +134,12 @@
                 <div id="loadingState" class="loading-state" style="display: none;">
                     <div class="loading-spinner"></div>
                     <p>Analyzing documents with AI...</p>
+                    <div class="progress-container"
+                        style="width: 100%; max-width: 300px; height: 6px; background: #e2e8f0; border-radius: 3px; margin: 15px auto; overflow: hidden;">
+                        <div id="progressBar"
+                            style="width: 0%; height: 100%; background: var(--primary-color); transition: width 0.3s ease;">
+                        </div>
+                    </div>
                     <p class="loading-subtext">This may take a few seconds</p>
                 </div>
             </div>
