@@ -277,10 +277,7 @@ def robots():
 def ads_txt():
     return send_from_directory('static', 'ads.txt')
 
-@app.route('/compare')
-def compare_page():
-    """Serve comparison page"""
-    return send_from_directory('static', 'compare.html')
+
 
 @app.route('/api/compare', methods=['POST'])
 def compare_documents():
